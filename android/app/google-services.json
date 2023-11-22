@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "868485591948",
+    "project_id": "mondaaapp-3a0ef",
+    "storage_bucket": "mondaaapp-3a0ef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:868485591948:android:ea6c58fab99c2910c1dca9",
+        "android_client_info": {
+          "package_name": "com.mondaa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "868485591948-6s0e4edv5nbjr2f6hftaol509ad2kpqg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXmuUnOLceK9irB86W4c2-NFypol3cnBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "868485591948-6s0e4edv5nbjr2f6hftaol509ad2kpqg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
