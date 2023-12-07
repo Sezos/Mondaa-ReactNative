@@ -29,7 +29,7 @@ import {SheetManager} from 'react-native-actions-sheet';
 const FilesScreen = ({route, navigation}) => {
   const provider = useContext(ProviderContext);
   const [files, setFiles] = useState([]);
-  const [isRefreshing, SetIsRefreshing] = useState(0);
+  const [isRefreshing, SetIsRefreshing] = useState(false);
   const params = route.params;
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const FilesScreen = ({route, navigation}) => {
   }, []);
 
   const fetch = async () => {
-    SetIsRefreshing(1);
+    SetIsRefreshing(true);
     const {data} = await services.getFiles(params?.id || 1);
 
     setFiles(
@@ -53,7 +53,7 @@ const FilesScreen = ({route, navigation}) => {
       }),
     );
 
-    SetIsRefreshing(0);
+    SetIsRefreshing(false);
   };
   const deleteFile = async id => {
     Alert.alert(
@@ -86,12 +86,12 @@ const FilesScreen = ({route, navigation}) => {
           marginBottom: 10,
           justifyContent: 'flex-start',
         }}>
-        {item.isFolder ? (
-          <ContextMenu
-            actions={[{title: 'Delete', destructive: true}]}
-            onPress={() => {
-              deleteFile(item.id);
-            }}>
+        <ContextMenu
+          actions={[{title: 'Delete', destructive: true}]}
+          onPress={() => {
+            deleteFile(item.id);
+          }}>
+          {item.isFolder ? (
             <TouchableOpacity
               onPress={() => {
                 navigation.push('FilesScreen', {id: item.id, name: item.name});
@@ -113,13 +113,7 @@ const FilesScreen = ({route, navigation}) => {
               <Icon source={'folder'} size={40} color="blue" />
               <Text>{' ' + item.name}</Text>
             </TouchableOpacity>
-          </ContextMenu>
-        ) : (
-          <ContextMenu
-            actions={[{title: 'Delete', destructive: true}]}
-            onPress={() => {
-              deleteFile(item.id);
-            }}>
+          ) : (
             <TouchableOpacity
               onPress={() => {
                 navigation.push('FileInfo', {id: item.id});
@@ -154,8 +148,8 @@ const FilesScreen = ({route, navigation}) => {
               />
               <Text>{' ' + item.name}</Text>
             </TouchableOpacity>
-          </ContextMenu>
-        )}
+          )}
+        </ContextMenu>
       </View>
     );
   };
