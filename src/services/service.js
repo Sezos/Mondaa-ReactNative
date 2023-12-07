@@ -23,13 +23,25 @@ class UserServices {
     this.controller = new AbortController();
   }
 
+  check = async version => {
+    return await new Promise((resolve, reject) => {
+      this.client
+        .post(instances.check, {version})
+        .then(response => resolve(response))
+        .catch(error => {
+          this.controller.abort();
+          printError(error);
+          reject(error);
+        });
+    });
+  };
+
   login = async data => {
     const sth = await new Promise((resolve, reject) => {
       this.client
         .post(instances.login, data)
         .then(response => resolve(response))
         .catch(error => {
-          console.log('error: ', error.data);
           this.controller.abort();
           printError(error);
           reject(error);
@@ -284,7 +296,6 @@ class UserServices {
         .then(response => resolve(response))
         .catch(error => {
           this.controller.abort();
-          console.log(error);
           reject(error);
         });
     });
@@ -646,6 +657,171 @@ class UserServices {
     return new Promise((resolve, reject) => {
       this.client
         .patch(instances.updateProject + '/' + id, data, config)
+        .then(response => resolve(response))
+        .catch(error => {
+          this.controller.abort();
+          printError(error);
+          reject(error);
+        });
+    });
+  };
+  getMessages = async (id, offset) => {
+    const access_token = await AsyncStorage.getItem('access_token');
+    const config = {
+      headers: {Authorization: `Bearer ${access_token}`},
+    };
+
+    return new Promise((resolve, reject) => {
+      this.client
+        .get(instances.getMessages + `/?groupId=${id}&offset=${offset}`, config)
+        .then(response => resolve(response))
+        .catch(error => {
+          this.controller.abort();
+          printError(error);
+          reject(error);
+        });
+    });
+  };
+  getGroups = async () => {
+    const access_token = await AsyncStorage.getItem('access_token');
+    const config = {
+      headers: {Authorization: `Bearer ${access_token}`},
+    };
+
+    return new Promise((resolve, reject) => {
+      this.client
+        .get(instances.group, config)
+        .then(response => resolve(response))
+        .catch(error => {
+          this.controller.abort();
+          printError(error);
+          reject(error);
+        });
+    });
+  };
+  sendMessage = async (msg, groupId) => {
+    const access_token = await AsyncStorage.getItem('access_token');
+    const config = {
+      headers: {Authorization: `Bearer ${access_token}`},
+    };
+
+    return new Promise((resolve, reject) => {
+      this.client
+        .post(instances.sendMessage, {body: msg, groupId: groupId}, config)
+        .then(response => resolve(response))
+        .catch(error => {
+          this.controller.abort();
+          printError(error);
+          reject(error);
+        });
+    });
+  };
+
+  createGroup = async (name, users) => {
+    const access_token = await AsyncStorage.getItem('access_token');
+    const config = {
+      headers: {Authorization: `Bearer ${access_token}`},
+    };
+
+    return new Promise((resolve, reject) => {
+      this.client
+        .post(instances.group, {name, users}, config)
+        .then(response => resolve(response))
+        .catch(error => {
+          this.controller.abort();
+          printError(error);
+          reject(error);
+        });
+    });
+  };
+  getGroupUsers = async id => {
+    const access_token = await AsyncStorage.getItem('access_token');
+    const config = {
+      headers: {Authorization: `Bearer ${access_token}`},
+    };
+
+    return new Promise((resolve, reject) => {
+      this.client
+        .get(instances.groupUser + '/' + id, config)
+        .then(response => resolve(response))
+        .catch(error => {
+          this.controller.abort();
+          printError(error);
+          reject(error);
+        });
+    });
+  };
+  getFiles = async id => {
+    const access_token = await AsyncStorage.getItem('access_token');
+    const config = {
+      headers: {Authorization: `Bearer ${access_token}`},
+    };
+    const param = id ? '/' + id : '';
+    return new Promise((resolve, reject) => {
+      this.client
+        .get(instances.Files + param, config)
+        .then(response => resolve(response))
+        .catch(error => {
+          this.controller.abort();
+          printError(error);
+          reject(error);
+        });
+    });
+  };
+  getFile = async id => {
+    const access_token = await AsyncStorage.getItem('access_token');
+    const config = {
+      headers: {Authorization: `Bearer ${access_token}`},
+    };
+    return new Promise((resolve, reject) => {
+      this.client
+        .get(instances.File + '/' + id, config)
+        .then(response => resolve(response))
+        .catch(error => {
+          this.controller.abort();
+          printError(error);
+          reject(error);
+        });
+    });
+  };
+  createFile = async (name, isFolder, file, parentId) => {
+    const access_token = await AsyncStorage.getItem('access_token');
+    const config = {
+      headers: {Authorization: `Bearer ${access_token}`},
+    };
+
+    const param = parentId ? '/' + parentId : '';
+
+    return new Promise((resolve, reject) => {
+      this.client
+        .post(
+          instances.Files + param,
+          {
+            name,
+            isFolder,
+            file,
+          },
+          config,
+        )
+        .then(response => resolve(response))
+        .catch(error => {
+          this.controller.abort();
+          printError(error);
+          reject(error);
+        });
+    });
+  };
+  deleteFile = async id => {
+    const access_token = await AsyncStorage.getItem('access_token');
+    const config = {
+      headers: {Authorization: `Bearer ${access_token}`},
+    };
+
+    const param = id ? '/' + id : '';
+
+    return new Promise((resolve, reject) => {
+      this.client
+        .delete(instances.Files + param, config)
         .then(response => resolve(response))
         .catch(error => {
           this.controller.abort();

@@ -25,6 +25,9 @@ import WorkerScreen from '../screens/manager/WorkerScreen';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import SendNotification from '../screens/manager/SendNotification';
 import ChatScreen from '../screens/ChatScreen';
+import EditGroupScreen from '../screens/EditGroupScreen';
+import FilesScreen from '../screens/FilesScreen';
+import FileScreen from '../screens/FileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +63,7 @@ const StackNavigators = ({navigation}) => {
             component={ForgotPasswordScreen}
             options={{headerShown: false, animation: 'slide_from_left'}}
           />
+          {/* <Stack.Screen name="Screen" */}
         </Stack.Group>
       ) : (
         <Stack.Group>
@@ -68,9 +72,11 @@ const StackNavigators = ({navigation}) => {
               <Stack.Screen name="ManagerTab" component={TabNavigator} />
               <Stack.Screen name="UserInfoScreen" component={UserInfoScreen} />
               <Stack.Screen name="AddWorkScreen" component={AddWorkScreen} />
-              <Stack.Screen name="WorkerScreen" component={WorkerScreen} />
-              <Stack.Screen name="ChatScreen" component={ChatScreen} />
               <Stack.Screen name="JobScreen" component={JobScreen} />
+              <Stack.Screen
+                name="EditGroupScreen"
+                component={EditGroupScreen}
+              />
               <Stack.Screen
                 name="TimesheetScreen"
                 component={ManagerTimeSheet}
@@ -110,9 +116,11 @@ const StackNavigators = ({navigation}) => {
                 name="LeaderInfoScreen"
                 component={UserInfoScreen}
               />
-              <Stack.Screen name="ChatScreen" component={ChatScreen} />
+              <Stack.Screen
+                name="EditGroupScreen"
+                component={EditGroupScreen}
+              />
               <Stack.Screen name="JobScreen" component={UserJobScreen} />
-              <Stack.Screen name="WorkerScreen" component={WorkerScreen} />
               <Stack.Screen name="TimesheetScreen" component={UserTimeSheet} />
               <Stack.Screen name="UserInfoScreen" component={UserInfoScreen} />
               <Stack.Screen name="BankInfoScreen" component={BankInfoScreen} />
@@ -128,9 +136,11 @@ const StackNavigators = ({navigation}) => {
                 name="UserMainScreen"
                 component={UserTabNavigator}
               />
-              <Stack.Screen name="ChatScreen" component={ChatScreen} />
+              <Stack.Screen
+                name="EditGroupScreen"
+                component={EditGroupScreen}
+              />
               <Stack.Screen name="JobScreen" component={UserJobScreen} />
-              <Stack.Screen name="WorkerScreen" component={WorkerScreen} />
               <Stack.Screen name="TimesheetScreen" component={UserTimeSheet} />
               <Stack.Screen name="UserInfoScreen" component={UserInfoScreen} />
               <Stack.Screen name="BankInfoScreen" component={BankInfoScreen} />
@@ -141,6 +151,12 @@ const StackNavigators = ({navigation}) => {
               />
             </Stack.Group>
           )}
+          <Stack.Group screenOptions={{headerShown: false}}>
+            <Stack.Screen name="WorkerScreen" component={WorkerScreen} />
+            <Stack.Screen name="ChatScreen" component={ChatScreen} />
+            <Stack.Screen name="FilesScreen" component={FilesScreen} />
+            <Stack.Screen name="FileInfo" component={FileScreen} />
+          </Stack.Group>
         </Stack.Group>
       )}
     </Stack.Navigator>

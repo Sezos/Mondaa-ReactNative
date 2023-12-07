@@ -1,4 +1,5 @@
 export const instances = {
+  check: 'CHECK',
   login: 'AUTH/LOGIN',
   forgotPassword: 'USER/FORGOT-PASSWORD',
   resetPassword: 'USER/RESET-PASSWORD',
@@ -36,6 +37,12 @@ export const instances = {
   setFCMToken: 'USER/SETFCM',
   sendNotification: 'SENDNOTI',
   sendNotificationOff: 'SENDNOTIOFF',
+  getMessages: 'CHAT',
+  group: 'GROUP',
+  sendMessage: 'CHAT',
+  groupUser: 'GROUPUSER',
+  Files: 'FILES',
+  File: 'FILES/FILE',
 };
 
 // {{MainUrl}}/User/selPointUser

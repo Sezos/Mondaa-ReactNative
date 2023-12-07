@@ -14,6 +14,7 @@ const UserProfileScreen = ({navigation}) => {
   const toast = useToast();
   const zuragURL =
     'https://scontent.fsyd12-1.fna.fbcdn.net/v/t39.30808-6/304834509_535131748616627_7084528645270394390_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=ekg7S1Z3-6UAX8tKlfi&_nc_ht=scontent.fsyd12-1.fna&oh=00_AfAlkOI1A2-s-dZFMKYHiRs1TW8V0pCytKWIDSQAAKD1MQ&oe=64ED8B55';
+
   const _handleLogout = () => {
     Alert.alert('Warning', 'Are you Sure?', [
       {
@@ -111,10 +112,22 @@ const UserProfileScreen = ({navigation}) => {
               <Icon name="chevron-right" size={18} />
             </View>
           </TouchableOpacity>
+          <Divider style={styles.divider} />
+
           <TouchableOpacity onPress={() => navigation.navigate('WorkerScreen')}>
             <View style={styles.item}>
               <Text allowFontScaling={false} style={{color: 'black'}}>
                 Employees
+              </Text>
+              <Icon name="chevron-right" size={18} />
+            </View>
+          </TouchableOpacity>
+          <Divider style={styles.divider} />
+          <TouchableOpacity
+            onPress={() => navigation.navigate('FilesScreen', {id: 1})}>
+            <View style={styles.item}>
+              <Text allowFontScaling={false} style={{color: 'black'}}>
+                Files
               </Text>
               <Icon name="chevron-right" size={18} />
             </View>

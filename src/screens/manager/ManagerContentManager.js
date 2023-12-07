@@ -68,10 +68,19 @@ const ManagerConterManager = ({navigation}) => {
       description: 'Send Notification',
       componentName: 'SendNotification',
     },
+    {
+      name: 'Files',
+      description: 'Files',
+      componentName: 'FilesScreen',
+    },
   ];
 
   const onPress = screenName => {
-    navigation.navigate(screenName);
+    if (screenName === 'Files') {
+      navigation.navigate(screenName, {
+        id: 1,
+      });
+    } else navigation.navigate(screenName);
   };
 
   const _profileSelect = async () => {

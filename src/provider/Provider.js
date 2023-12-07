@@ -1,15 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {createContext, useEffect, useState} from 'react';
 import services from '../services/service';
-import messaging from '@react-native-firebase/messaging';
-import {Alert} from 'react-native';
-import {
-  NotificationListener,
-  RequestUserPermission,
-} from '../utils/notification';
-const ProviderContext = createContext();
+import {RequestUserPermission} from '../utils/notification';
 
-// import PushNotification from 'react-native-push-notification';
+import {socket} from '../utils/socket';
+
+const ProviderContext = createContext();
 
 const Provider = props => {
   const [avatar, setAvatar] = useState('');
@@ -57,6 +53,7 @@ const Provider = props => {
   return (
     <ProviderContext.Provider
       value={{
+        socket,
         isLoggedIn,
         setIsLoggedIn,
         userData,

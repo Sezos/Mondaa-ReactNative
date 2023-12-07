@@ -1,135 +1,122 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  Pressable,
-  TouchableOpacity,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import {IconButton, Button} from 'react-native-paper';
 import {COLOR_PALETTE, FONTS} from '../utils/Constants';
-import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
+import {FlatList, GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+// import {ProviderContext} from './../provider/Provider';
+import services from '../services/service';
+import {socket} from '../utils/socket';
+import UserEmptyList from '../components/EmptyList2';
+import {SheetManager} from 'react-native-actions-sheet';
 
 const ChatsScreen = ({}) => {
+  const [groups, setGroups] = useState([]);
+
+  socket.onAny((eventName, chat) => {
+    console.log(eventName, chat);
+    if (eventName.split('_')[0] === 'group') {
+      fetch();
+    }
+  });
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  const fetch = async () => {
+    const {data} = await services.getGroups();
+    setGroups(
+      data.map(dat => {
+        return {
+          id: dat.id,
+          title: dat.name,
+          lastChat: dat.message?.body,
+          date: dat.message?.TimeStamp?.split('T')[0],
+          status: 1,
+          imgURL: dat.imgURL,
+        };
+      }),
+    );
+  };
+
+  const createGroup = async () => {
+    const emps = await SheetManager.show('AddGroupSheet');
+    console.log(emps);
+    if (!emps) {
+      return;
+    }
+    const name = await SheetManager.show('CreateGroupSheet', {
+      payload: {employees: emps},
+    });
+    if (!name) {
+      return;
+    }
+    await services.createGroup(
+      name,
+      emps.map(emp => emp.id),
+    );
+    fetch();
+  };
+
   return (
     <View>
-      <ChatHeader />
+      <ChatHeader onPress={createGroup} />
       <View>
         <GestureHandlerRootView>
-          <ScrollView
-            style={{width: '100%', height: '100%', backgroundColor: 'white'}}>
-            <View>
+          <FlatList
+            style={{height: '100%'}}
+            data={groups}
+            renderItem={({item}) => (
               <ChatSection
-                id={1}
-                title={'title'}
-                body={'body'}
-                lastChat={'lastChat'}
-                date={'date'}
-                status={1}
-                imgURL={require('../assets/job_icon.png')}
+                id={item.id}
+                title={item.title}
+                lastChat={item.lastChat}
+                date={item.date}
+                status={item.status}
+                imgURL={item.imgURL}
               />
-              <ChatSection
-                id={2}
-                title={'title'}
-                body={'body'}
-                lastChat={'lastChat'}
-                date={'date'}
-                status={1}
-                imgURL={require('../assets/job_icon.png')}
-              />
-              <ChatSection
-                id={3}
-                title={'title'}
-                body={'body'}
-                lastChat={'lastChat'}
-                date={'date'}
-                status={1}
-                imgURL={require('../assets/job_icon.png')}
-              />
-              <ChatSection
-                id={4}
-                title={'title'}
-                body={'body'}
-                lastChat={'lastChat'}
-                date={'date'}
-                status={1}
-                imgURL={require('../assets/job_icon.png')}
-              />
-              <ChatSection
-                id={5}
-                title={'title'}
-                body={'body'}
-                lastChat={'lastChat'}
-                date={'date'}
-                status={1}
-                imgURL={require('../assets/job_icon.png')}
-              />
-              <ChatSection
-                id={6}
-                title={'title'}
-                body={'body'}
-                lastChat={'lastChat'}
-                date={'date'}
-                status={1}
-                imgURL={require('../assets/job_icon.png')}
-              />
-              <ChatSection
-                id={7}
-                title={'title'}
-                body={'body'}
-                lastChat={'lastChat'}
-                date={'date'}
-                status={1}
-                imgURL={require('../assets/job_icon.png')}
-              />
-              <ChatSection
-                id={8}
-                title={'title'}
-                body={'body'}
-                lastChat={'lastChat'}
-                date={'date'}
-                status={1}
-                imgURL={require('../assets/job_icon.png')}
-              />
-              <ChatSection
-                id={9}
-                title={'title'}
-                body={'body'}
-                lastChat={'lastChat'}
-                date={'date'}
-                status={1}
-                imgURL={require('../assets/job_icon.png')}
-              />
-            </View>
-          </ScrollView>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            ListEmptyComponent={() => (
+              <UserEmptyList title="Sorry, You don't have any chat!" />
+            )}
+          />
         </GestureHandlerRootView>
       </View>
     </View>
   );
 };
 
-const ChatHeader = () => {
+const ChatHeader = ({onPress}) => {
   return (
     <View
       style={{
         display: 'flex',
-        justifyContent: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
         paddingBottom: 20,
       }}>
-      <Text style={{fontFamily: FONTS.bold, fontSize: 20}}>Chat</Text>
+      <Text style={{fontFamily: FONTS.bold, fontSize: 20, marginLeft: 20}}>
+        Chat
+      </Text>
+      <IconButton icon={'plus-circle-outline'} onPress={onPress} />
     </View>
   );
 };
 
-const ChatSection = ({id, title, lastChat, date, imgURL, status}) => {
+const ChatSection = ({id, title, imgURL, lastChat, date, status}) => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('ChatScreen', {id, title, imgURL});
+        navigation.navigate('ChatScreen', {
+          id: id,
+          title: title,
+          imgURL: imgURL || require('../assets/job_icon.png'),
+        });
       }}>
       <View style={styles.ChatSection.Body}>
         <View style={styles.ChatSection.leftSide}>
@@ -137,7 +124,7 @@ const ChatSection = ({id, title, lastChat, date, imgURL, status}) => {
             <Image
               style={styles.ChatSection.image}
               resizeMode="contain"
-              source={imgURL}
+              source={imgURL || require('../assets/job_icon.png')}
             />
           </View>
           <View>
@@ -146,7 +133,7 @@ const ChatSection = ({id, title, lastChat, date, imgURL, status}) => {
           </View>
         </View>
         <View style={styles.ChatSection.rightSide}>
-          <Text style={styles.ChatSection.status}>{status}</Text>
+          {/* <Text style={styles.ChatSection.status}>{status}</Text> */}
           <Text style={styles.ChatSection.date}>{date}</Text>
         </View>
       </View>

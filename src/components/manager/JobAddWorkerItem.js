@@ -14,6 +14,7 @@ const JobAddWorkerItem = ({item, onPress}) => {
     item.selected = !item.selected;
     onPress(item);
   };
+
   return (
     <TouchableOpacity onPress={_handlePress}>
       <View style={[styles.container]}>

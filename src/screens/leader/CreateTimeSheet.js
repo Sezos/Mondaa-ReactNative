@@ -114,7 +114,8 @@ export default function CreateTimeSheet({navigation}) {
       });
 
       setLocations(lel);
-      setSelectedLocation(lel.length === 1 ? 0 : -1);
+      setSelectedLocation(-1);
+      setDatas([]);
     } catch (err) {
       console.log(err);
     } finally {
@@ -206,7 +207,7 @@ export default function CreateTimeSheet({navigation}) {
             label={'Location'}
             visible={locationDropDown}
             showDropDown={() => {
-              locations.length <= 1 || setLocationDropDown(true);
+              setLocationDropDown(true);
             }}
             onDismiss={() => setLocationDropDown(false)}
             value={selectedLocation}
@@ -217,7 +218,6 @@ export default function CreateTimeSheet({navigation}) {
             list={locations}
             inputProps={{
               style: styles.input,
-              disabled: locations.length <= 1,
             }}
           />
           <DropDown

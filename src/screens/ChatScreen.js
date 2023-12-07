@@ -1,36 +1,145 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  KeyboardAvoidingView,
+} from 'react-native';
 
 import {COLOR_PALETTE, FONTS} from '../utils/Constants';
 import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
 import {IconButton, TextInput} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
-import {subscribeToMessages} from './messageService';
+import services from '../services/service';
+import {ProviderContext} from '../provider/Provider';
+import {socket} from '../utils/socket';
+import UserEmptyList from '../components/EmptyList2';
+import {SheetManager} from 'react-native-actions-sheet';
 
-const ChatScreen = ({route}) => {
-  const [messages, setMessages] = useState([]);
-  const params = route.params;
-
+const Message = ({item, index}) => {
   return (
-    <View style={{height: '100%'}}>
-      <ChatHeader name={params.title} />
-      <View style={{height: '100%'}}>
-        <GestureHandlerRootView>
-          <ScrollView
-            style={{width: '100%', height: '95%', backgroundColor: 'white'}}>
-            <View>
-              <Text>{params.id}</Text>
-              <Text>lmao</Text>
-            </View>
-          </ScrollView>
-        </GestureHandlerRootView>
+    <View>
+      <View
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: item.isMine ? 'flex-end' : 'flex-start',
+          marginTop: 5,
+          marginBottom: 5,
+        }}>
+        <View
+          style={{
+            backgroundColor: item.isMine ? '#00B2FF' : '#F0F0F0',
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            marginRight: 10,
+            marginLeft: 10,
+            width: 'auto',
+            maxWidth: '50%',
+            borderRadius: 20,
+          }}>
+          <Text>{item?.body}</Text>
+        </View>
       </View>
-      <ChatInput />
     </View>
   );
 };
 
-const ChatHeader = ({name}) => {
+const ChatScreen = ({route, navigation}) => {
+  const provider = useContext(ProviderContext);
+  const [messages, setMessages] = useState([]);
+  const params = route.params;
+  const scrollRef = useRef();
+
+  socket.on(`group_${params.id}`, ll => {
+    if (ll && ll.senderId !== provider.userData.id) {
+      setMessages([ll].concat(messages));
+    } else {
+      console.log("it's yours");
+    }
+  });
+
+  useEffect(() => {
+    fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetch = async () => {
+    const {data} = await services.getMessages(params.id, messages.length);
+    console.log(data);
+    setMessages(
+      data.map(msg => {
+        return {...msg, isMine: msg.senderId === provider.userData.id};
+      }),
+    );
+  };
+
+  const loadMore = async () => {
+    const {data} = await services.getMessages(params.id, messages.length);
+    setMessages(
+      messages.concat(
+        data.map(msg => {
+          return {...msg, isMine: msg.senderId === provider.userData.id};
+        }),
+      ),
+    );
+  };
+
+  const sendMessage = async input => {
+    const {data} = await services.sendMessage(input, params.id);
+    console.log(data);
+    setMessages(
+      [
+        {
+          body: input,
+          senderId: provider.userData.id,
+          groupId: params.id,
+          isMine: true,
+        },
+      ].concat(messages),
+    );
+  };
+  const onPress = async () => {
+    const {data} = await services.getGroupUsers(params.id);
+    console.log(data);
+    navigation.navigate('EditGroupScreen', {
+      name: params.title,
+      users: data,
+    });
+    // const sth = await SheetManager.show('EditGroupSheet', {
+    //   payload: {employees: data},
+    // });
+    console.log('onPress');
+  };
+  return (
+    <View style={{height: '100%'}}>
+      <ChatHeader name={params.title} onPress={onPress} />
+      <KeyboardAvoidingView
+        behavior="height"
+        style={{backgroundColor: 'white', flex: 1}}>
+        <View style={{marginBottom: 100}}>
+          <FlatList
+            onEndReached={loadMore}
+            inverted={1}
+            ref={scrollRef}
+            data={messages}
+            renderItem={Message}
+            initialNumToRender={10}
+            keyExtractor={(item, index) => index.toString()}
+            ListEmptyComponent={() => (
+              <UserEmptyList title="Sorry, It's empty!" />
+            )}
+          />
+        </View>
+        <ChatInput onPress={sendMessage} />
+      </KeyboardAvoidingView>
+    </View>
+  );
+};
+
+const ChatHeader = ({name, onPress}) => {
   const navigation = useNavigation();
 
   return (
@@ -40,6 +149,7 @@ const ChatHeader = ({name}) => {
         justifyContent: 'center',
         alignItems: 'center',
         paddingBottom: 20,
+        height: 100,
       }}>
       <IconButton
         style={{display: 'flex', position: 'absolute', left: 0}}
@@ -48,33 +158,45 @@ const ChatHeader = ({name}) => {
           navigation.goBack();
         }}
       />
-      <Text style={{fontFamily: FONTS.bold, fontSize: 20}}>{name}</Text>
+      <Pressable onPress={onPress}>
+        <Text style={{fontFamily: FONTS.bold, fontSize: 20}}>{name}</Text>
+      </Pressable>
     </View>
   );
 };
 
-const ChatInput = ({value, setValue}) => {
+const ChatInput = ({onPress}) => {
+  const [input, setInput] = useState('');
+
   return (
     <View
       style={{
         display: 'flex',
         position: 'absolute',
-        bottom: 0,
+        bottom: 50,
         left: 0,
         alignItems: 'center',
         width: '100%',
-        height: 75,
+        // height: 75,
         paddingLeft: 20,
-        paddingBottom: 30,
         flexDirection: 'row',
       }}>
       <IconButton icon="file-document-outline" />
       <TextInput
+        autoCorrect={false}
         style={{width: '70%', backgroundColor: 'transparent'}}
-        value={value}
-        onChange={setValue}
+        value={input}
+        onChangeText={e => {
+          setInput(e);
+        }}
       />
-      <IconButton icon="send-circle-outline" />
+      <IconButton
+        icon="send-circle-outline"
+        onPress={() => {
+          onPress(input);
+          setInput('');
+        }}
+      />
     </View>
   );
 };

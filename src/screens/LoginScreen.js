@@ -1,6 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
-import {TextInput, Button, Divider, Checkbox} from 'react-native-paper';
+import {
+  TextInput,
+  Button,
+  Divider,
+  Modal,
+  Portal,
+  Checkbox,
+} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {ProviderContext} from '../provider/Provider';
 import {COLOR_PALETTE, FONTS} from '../utils/Constants';
@@ -10,6 +17,7 @@ import {useToast} from 'react-native-toast-notifications';
 import {StackActions} from '@react-navigation/native';
 import LoginSvg from '../assets/LoginSvg';
 import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
+import pkg from './../../package.json';
 import {Buffer} from 'buffer';
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
@@ -24,10 +32,34 @@ const LoginScreen = ({navigation}) => {
   const [isRemember, setIsRemember] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [status, setStatus] = useState(null);
 
   useEffect(() => {
+    checkVersion();
     _syncDatas();
   }, []);
+
+  const checkVersion = async () => {
+    if (!pkg.version) {
+      return;
+    }
+
+    try {
+      const result = await services.check(pkg.version);
+      if (result.status !== 201) {
+        setStatus(
+          'There is some problem with the server, please try again later',
+        );
+      }
+      if (result.data.code !== 1) {
+        setStatus(result.data.message);
+      }
+    } catch (err) {
+      setStatus(
+        'There is some problem with the server, please try again later',
+      );
+    }
+  };
 
   const _syncDatas = async () => {
     const result = await AsyncStorage.multiGet([
@@ -53,13 +85,11 @@ const LoginScreen = ({navigation}) => {
         email: username,
         password: password,
       });
-      console.log(data);
       if (data.success === true) {
         if (data.user.avatar) {
           const avatarURL = await services.getAvatarURL(
             data.access_token.toString(),
           );
-          console.log(avatarURL.data.s3_url + data.user.avatar);
           const avatarResult = await services.getAvatar(
             avatarURL.data.s3_url + data.user.avatar,
           );
@@ -209,6 +239,37 @@ const LoginScreen = ({navigation}) => {
           </View>
         </ScrollView>
       </GestureHandlerRootView>
+      <Modal
+        visible={status !== null}
+        onDismiss={() => {
+          setStatus(null);
+        }}
+        style={{
+          backgroundColor: 'white',
+          borderRadius: 30,
+          padding: 20,
+          display: 'flex',
+          position: 'absolute',
+          left: '10%',
+          top: '5%',
+          width: '80%',
+          height: '70%',
+        }}>
+        <Text>{status}</Text>
+
+        <Button
+          mode="contained"
+          style={{...styles.button, marginTop: 100}}
+          contentStyle={{height: 45}}
+          labelStyle={styles.buttonLabel}
+          textColor={COLOR_PALETTE.buttonTextColor}
+          buttonColor={COLOR_PALETTE.buttonColor}
+          onPress={() => {
+            setStatus(null);
+          }}>
+          Understood!
+        </Button>
+      </Modal>
     </View>
   );
 };
