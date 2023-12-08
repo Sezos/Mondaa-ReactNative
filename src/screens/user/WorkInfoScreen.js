@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
+import {StyleSheet, View, Text, Image, ActivityIndicator} from 'react-native';
 import {ProviderContext} from '../../provider/Provider';
 import {COLOR_PALETTE} from '../../utils/Constants';
 import {Button, IconButton} from 'react-native-paper';
@@ -48,33 +48,45 @@ const fileInputs = [
 const WorkInfoScreen = ({navigation}) => {
   const styles = useStyles();
   const [userData, setUserData] = useState({});
-
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     _fetchData();
   }, []);
 
   const handleFile = async name => {
     const result = await ImagePicker.openPicker({
-      width: 300,
-      height: 300,
-      cropping: true,
       includeBase64: true,
-      cropperCircleOverlay: true,
       mediaType: 'photo',
       loadingLabelText: 'Loading, Please Wait!',
     });
-
+    setIsLoading(true);
     const {data} = await services.uploadImage({
       image: `data:${result.mime};base64,${result.data}`,
       type: name,
     });
 
     setUserData({...userData, [name]: data});
+    setIsLoading(false);
   };
+
   const _fetchData = async () => {
     const {data} = await services.getUserInfo();
     setUserData(data);
   };
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text>Image is being uploaded! Please wait</Text>
+        <ActivityIndicator size="large" color="gray" />
+      </View>
+    );
+  }
   return (
     <View style={StyleSheet.absoluteFill}>
       <View style={styles.headerContainer}>
@@ -145,14 +157,7 @@ const WorkInfoScreen = ({navigation}) => {
                         </Text>
                       </View>
                       {userData[field.name] ? (
-                        <Image
-                          source={{
-                            uri:
-                              'https://mondaa-test.s3.ap-east-1.amazonaws.com/' +
-                              userData[field.name],
-                          }}
-                          style={{width: 200, height: 200}}
-                        />
+                        <Text>It has been Uploaded.</Text>
                       ) : (
                         <Text>No File Found</Text>
                       )}
@@ -204,7 +209,7 @@ const useStyles = () => {
     },
     itemCaption: {
       fontSize: 14,
-      color: '#D1CFCF',
+      color: 'black',
       marginLeft: 5,
     },
     itemValue: {
