@@ -28,7 +28,7 @@ const RenderContent = ({item, index, onPress}) => {
         <View style={styles.subContainer}>
           <Text
             allowFontScaling={false}
-            style={[styles.jobName, {color: 'black'}]}>
+            style={[styles.jobName, {textColor: 'black'}]}>
             {item.description}
           </Text>
           <IconButton

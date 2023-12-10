@@ -18,8 +18,8 @@ const printError = error => {
 
 class UserServices {
   constructor() {
-    this.client = axios.create({baseURL: 'https://api.mondaa.com.au/'});
-    // this.client = axios.create({baseURL: 'http://localhost:3030/'});
+    // this.client = axios.create({baseURL: 'https://api.mondaa.com.au/'});
+    this.client = axios.create({baseURL: 'http://localhost:3030/'});
     this.controller = new AbortController();
   }
 
@@ -206,7 +206,8 @@ class UserServices {
   };
 
   getAvatar = async url => {
-    return new Promise((resolve, reject) => {
+    console.log(url);
+    const sth = await new Promise((resolve, reject) => {
       axios
         .get(url, {responseType: 'arraybuffer'})
         .then(response => resolve(response))
@@ -215,6 +216,7 @@ class UserServices {
           reject(error);
         });
     });
+    return sth;
   };
 
   setAvatar = async data => {

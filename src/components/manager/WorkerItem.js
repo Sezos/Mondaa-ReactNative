@@ -1,15 +1,17 @@
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {Avatar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLOR_PALETTE, FONTS} from '../../utils/Constants';
+import services from '../../services/service';
+import {ProviderContext} from '../../provider/Provider';
 
 const WorkerItem = ({item, index, isWorker}) => {
   const styles = useStyles();
   const navigation = useNavigation();
-  const zuragURL =
-    'https://mondaa-test.s3.ap-east-1.amazonaws.com/' + item.avatar;
+  const provider = useContext(ProviderContext);
+  const zuragURL = provider.s3URL + item.avatar;
 
   return (
     <TouchableOpacity

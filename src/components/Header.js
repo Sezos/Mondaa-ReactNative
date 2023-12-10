@@ -8,6 +8,7 @@ import {COLOR_PALETTE, FONTS} from '../utils/Constants';
 const Header = props => {
   const styles = useStyles();
   const provider = useContext(ProviderContext);
+  const {s3URL} = provider;
   const zuragURL =
     'https://scontent.fsyd12-1.fna.fbcdn.net/v/t39.30808-6/304834509_535131748616627_7084528645270394390_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=ekg7S1Z3-6UAX8tKlfi&_nc_ht=scontent.fsyd12-1.fna&oh=00_AfAlkOI1A2-s-dZFMKYHiRs1TW8V0pCytKWIDSQAAKD1MQ&oe=64ED8B55';
 
@@ -16,9 +17,7 @@ const Header = props => {
       <View style={styles.headerSubContainer}>
         <Avatar.Image
           source={{
-            uri: props.avatar
-              ? 'https://mondaa-test.s3.ap-east-1.amazonaws.com/' + props.avatar
-              : zuragURL,
+            uri: props.avatar ? s3URL + props.avatar : zuragURL,
           }}
           size={60}
         />

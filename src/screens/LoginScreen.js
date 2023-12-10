@@ -90,6 +90,7 @@ const LoginScreen = ({navigation}) => {
           const avatarURL = await services.getAvatarURL(
             data.access_token.toString(),
           );
+          console.log(avatarURL.data.s3_url + data.user.avatar);
           const avatarResult = await services.getAvatar(
             avatarURL.data.s3_url + data.user.avatar,
           );

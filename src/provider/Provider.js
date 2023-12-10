@@ -3,12 +3,11 @@ import React, {createContext, useEffect, useState} from 'react';
 import services from '../services/service';
 import {RequestUserPermission} from '../utils/notification';
 
-import {socket} from '../utils/socket';
-
 const ProviderContext = createContext();
 
 const Provider = props => {
   const [avatar, setAvatar] = useState('');
+  const [s3URL, setS3URL] = useState('');
   const [userData, setUserData] = useState({});
   const [workerList, setWorkerList] = useState([]);
   const [employeeCount, setEmployeeCount] = useState(0);
@@ -25,8 +24,15 @@ const Provider = props => {
       _getUserData();
       _countProjectUsers();
       _countEmployees();
+      _getS3();
     }
   }, [isLoggedIn]);
+
+  //get S3 URL
+  const _getS3 = async () => {
+    const {data} = await services.getAvatarURL();
+    setS3URL(data.s3_url);
+  };
 
   //total employees: count
   const _countEmployees = async () => {
@@ -53,7 +59,8 @@ const Provider = props => {
   return (
     <ProviderContext.Provider
       value={{
-        socket,
+        s3URL,
+        setS3URL,
         isLoggedIn,
         setIsLoggedIn,
         userData,
