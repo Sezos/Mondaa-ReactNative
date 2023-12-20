@@ -1,4 +1,28 @@
 {
-  "name": "Mondaa",
-  "displayName": "Mondaa"
+  "expo": {
+    "name": "App",
+    "slug": "App",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "googleServicesFile": "./android/app/google-services.json",
+      "package": "com.mondaagroup"
+    },
+    "ios": {
+      "googleServicesFile": "./ios/App/GoogleService-Info.plist",
+      "useFrameworks": "static",
+      "bundleIdentifier": "com.mondaagroup"
+    },
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/messaging"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b4ef74e2-cc46-436c-b03f-8c8494b56b23"
+      }
+    }
+  }
 }

@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">Mondaa</string>
-    <string moduleConfig="true" name="CodePushDeploymentKey">uFLIK27lmY75fPumyquy9QS28YwEczSWun_Ve</string>
-    <string name="appCenterCrashes_whenToSendCrashes" moduleConfig="true" translatable="false">DO_NOT_ASK_JAVASCRIPT</string>
-    <string name="appCenterAnalytics_whenToEnableAnalytics" moduleConfig="true" translatable="false">ALWAYS_SEND</string>
+  <string name="app_name">Mondaa</string>
+  <string name="appCenterAnalytics_whenToEnableAnalytics" moduleConfig="true" translatable="false">ENABLE_IN_JS</string>
+  <string name="appCenterCrashes_whenToSendCrashes" moduleConfig="true" translatable="false">ENABLE_IN_JS</string>
 </resources>

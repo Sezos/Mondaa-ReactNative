@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {TextInput, Button, Appbar, IconButton} from 'react-native-paper';
-import {Input} from 'react-native-elements';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import PickerModal from 'react-native-picker-modal-view';
 import services from '../../services/service';
