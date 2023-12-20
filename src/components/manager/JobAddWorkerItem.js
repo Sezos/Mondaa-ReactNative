@@ -1,14 +1,15 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Avatar, IconButton} from 'react-native-paper';
 import {COLOR_PALETTE, FONTS} from '../../utils/Constants';
+import {ProviderContext} from '../../provider/Provider';
 
 const JobAddWorkerItem = ({item, onPress}) => {
+  const provider = useContext(ProviderContext);
   const styles = useStyles();
-  const zuragURL =
-    'https://mondaa-test.s3.ap-east-1.amazonaws.com/' + item.avatar;
+  const zuragURL = provider.s3URL + item.avatar;
 
   const _handlePress = () => {
     item.selected = !item.selected;

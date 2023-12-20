@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {StyleSheet, View, Text, FlatList} from 'react-native';
 import ActionSheet, {SheetManager} from 'react-native-actions-sheet';
 import {Button, Divider, TextInput, Avatar} from 'react-native-paper';
 import {COLOR_PALETTE, FONTS} from '../../utils/Constants';
+import {ProviderContext} from '../../provider/Provider';
 
 const CreateGroupSheet = props => {
+  const provider = useContext(ProviderContext);
   const employees = props.payload?.employees;
   const [name, setName] = useState('');
   const _handleSave = async () => {
@@ -44,8 +46,7 @@ const CreateGroupSheet = props => {
         <FlatList
           data={employees}
           renderItem={({item, index}) => {
-            const zuragURL =
-              'https://mondaa-test.s3.ap-east-1.amazonaws.com/' + item.avatar;
+            const zuragURL = provider.s3URL + item.avatar;
 
             return (
               <View

@@ -753,6 +753,48 @@ class UserServices {
         });
     });
   };
+
+  updateGroup = async (id, name, addUserIds, removeUserIds) => {
+    const access_token = await AsyncStorage.getItem('access_token');
+    const config = {
+      headers: {Authorization: `Bearer ${access_token}`},
+    };
+
+    return new Promise((resolve, reject) => {
+      this.client
+        .patch(
+          instances.group + '/' + id,
+          {name, addUserIds, removeUserIds},
+          config,
+        )
+        .then(response => resolve(response))
+        .catch(error => {
+          this.controller.abort();
+          printError(error);
+          reject(error);
+        });
+    });
+  };
+
+  setGroupImage = async (id, data) => {
+    const access_token = await AsyncStorage.getItem('access_token');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'content-type': 'application/x-www-form-urlencoded',
+      },
+    };
+    return await new Promise((resolve, reject) => {
+      this.client
+        .post(instances.group + '/' + id, data, config)
+        .then(response => resolve(response))
+        .catch(error => {
+          this.controller.abort();
+          reject(error);
+        });
+    });
+  };
+
   getFiles = async id => {
     const access_token = await AsyncStorage.getItem('access_token');
     const config = {

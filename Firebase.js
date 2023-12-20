@@ -11,7 +11,7 @@ const androidCredentials = {
 };
 
 const iosCredentials = {
-  clientId: 'com.mondaa',
+  clientId: 'com.mondaagroup',
   appId: '1:868485591948:ios:9998b2f7da4bcf82c1dca9',
   apiKey: 'AIzaSyChwUhcZFIBTGtIPTlXKl9T8HgKbBPUpxU',
   storageBucket: 'mondaaapp-3a0ef.appspot.com',

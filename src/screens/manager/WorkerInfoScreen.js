@@ -37,7 +37,7 @@ const WorkerInfoScreen = ({navigation, route}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [rate, setRate] = useState(userData.rate);
 
-  const zuragURL = 'https://mondaa-test.s3.ap-east-1.amazonaws.com/';
+  const zuragURL = provider.s3URL;
 
   const _handleVerify = async () => {
     try {

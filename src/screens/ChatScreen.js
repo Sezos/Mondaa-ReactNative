@@ -6,6 +6,7 @@ import {
   FlatList,
   Pressable,
   KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
 
 import {COLOR_PALETTE, FONTS} from '../utils/Constants';
@@ -50,6 +51,7 @@ const Message = ({item, index}) => {
 const ChatScreen = ({route, navigation}) => {
   const provider = useContext(ProviderContext);
   const [messages, setMessages] = useState([]);
+  const [title, setTitle] = useState(route.params.title);
   const params = route.params;
   const scrollRef = useRef();
 
@@ -68,7 +70,6 @@ const ChatScreen = ({route, navigation}) => {
 
   const fetch = async () => {
     const {data} = await services.getMessages(params.id, messages.length);
-    console.log(data);
     setMessages(
       data.map(msg => {
         return {...msg, isMine: msg.senderId === provider.userData.id};
@@ -87,25 +88,42 @@ const ChatScreen = ({route, navigation}) => {
     );
   };
 
-  const sendMessage = async input => {
+  const sendMessage = async input1 => {
+    const input = input1.trim();
+    if (input === '') {
+      return;
+    }
     const {data} = await services.sendMessage(input, params.id);
-    console.log(data);
-    setMessages(
-      [
-        {
-          body: input,
-          senderId: provider.userData.id,
-          groupId: params.id,
-          isMine: true,
-        },
-      ].concat(messages),
-    );
+
+    if (data.success) {
+      setMessages(
+        [
+          {
+            body: input,
+            senderId: provider.userData.id,
+            groupId: params.id,
+            isMine: true,
+          },
+        ].concat(messages),
+      );
+    } else {
+      Alert.alert('Error', data.message);
+    }
   };
+
+  const update = async newTitle => {
+    setTitle(newTitle);
+    params.update();
+  };
+
   const onPress = async () => {
     const {data} = await services.getGroupUsers(params.id);
-    console.log(data);
+    console.log('imgURL: ', params.imgURL);
     navigation.navigate('EditGroupScreen', {
-      name: params.title,
+      id: params.id,
+      name: title,
+      imgURL: params.imgURL,
+      update: update,
       users: data,
     });
     // const sth = await SheetManager.show('EditGroupSheet', {
@@ -113,9 +131,10 @@ const ChatScreen = ({route, navigation}) => {
     // });
     console.log('onPress');
   };
+
   return (
     <View style={{height: '100%'}}>
-      <ChatHeader name={params.title} onPress={onPress} />
+      <ChatHeader name={title} onPress={onPress} />
       <KeyboardAvoidingView
         behavior="height"
         style={{backgroundColor: 'white', flex: 1}}>
@@ -129,7 +148,9 @@ const ChatScreen = ({route, navigation}) => {
             initialNumToRender={10}
             keyExtractor={(item, index) => index.toString()}
             ListEmptyComponent={() => (
-              <UserEmptyList title="Sorry, It's empty!" />
+              <View style={{transform: 'scaleY(-1)'}}>
+                <UserEmptyList title="Welcome to the Chat" />
+              </View>
             )}
           />
         </View>
@@ -178,13 +199,13 @@ const ChatInput = ({onPress}) => {
         alignItems: 'center',
         width: '100%',
         // height: 75,
-        paddingLeft: 20,
+        paddingLeft: 40,
         flexDirection: 'row',
       }}>
-      <IconButton icon="file-document-outline" />
+      {/* <IconButton icon="file-document-outline" /> */}
       <TextInput
         autoCorrect={false}
-        style={{width: '70%', backgroundColor: 'transparent'}}
+        style={{width: '85%', backgroundColor: 'transparent'}}
         value={input}
         onChangeText={e => {
           setInput(e);

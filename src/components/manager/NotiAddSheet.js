@@ -57,7 +57,11 @@ const NotiAddSheet = props => {
   };
 
   const _handlePress = async data => {
-    setSelectedEmp(selectedEmp.concat(data));
+    if (!selectedEmp.map(e => e.id).includes(data.id)) {
+      setSelectedEmp(selectedEmp.concat(data));
+    } else {
+      setSelectedEmp(selectedEmp.filter(e => data.id !== e.id));
+    }
   };
 
   const _handleSave = async () => {

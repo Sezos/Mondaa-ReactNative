@@ -2,6 +2,7 @@
 import React, {createContext, useEffect, useState} from 'react';
 import services from '../services/service';
 import {RequestUserPermission} from '../utils/notification';
+import {socket} from '../utils/socket';
 
 const ProviderContext = createContext();
 
@@ -27,6 +28,10 @@ const Provider = props => {
       _getS3();
     }
   }, [isLoggedIn]);
+
+  socket.on('connect', () => {
+    console.log('connected');
+  });
 
   //get S3 URL
   const _getS3 = async () => {

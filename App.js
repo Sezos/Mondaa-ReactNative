@@ -11,9 +11,9 @@ import StackNavigators from './src/navigation/StackNavigation';
 import CustomCalendar from './src/components/CustomCalendar';
 import './src/components/sheets';
 import {NotificationListener} from './src/utils/notification';
-
 LogBox.ignoreLogs([
   'Sending `onAnimatedValueUpdate` with no listeners registered.',
+  'Non-serializable values were found in the navigation state',
 ]);
 
 const App = () => {

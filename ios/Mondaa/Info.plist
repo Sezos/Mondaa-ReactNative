@@ -4,8 +4,6 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
-	<key>NSCameraUsageDescription</key>
-	<string>We need your camera permissions to use Camera App.</string>
 	<key>CFBundleDisplayName</key>
 	<string>Mondaa</string>
 	<key>CFBundleExecutable</key>
@@ -34,21 +32,17 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>mondaa.com.au</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-			</dict>
-		</dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>to make your experience with Mondaa to the fullest</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need your camera permissions to use Camera App.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow access to your photos to set your avatar</string>
 	<key>UIAppFonts</key>

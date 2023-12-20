@@ -25,6 +25,7 @@ import {ProviderContext} from '../provider/Provider';
 import {socket} from '../utils/socket';
 import UserEmptyList from '../components/EmptyList2';
 import {SheetManager} from 'react-native-actions-sheet';
+import FolderSvg from '../assets/TabIcons/Folder';
 
 const FilesScreen = ({route, navigation}) => {
   const provider = useContext(ProviderContext);
@@ -110,7 +111,7 @@ const FilesScreen = ({route, navigation}) => {
                 alignItems: 'center',
                 display: 'flex',
               }}>
-              <Icon source={'folder'} size={40} color="blue" />
+              <FolderSvg />
               <Text>{' ' + item.name}</Text>
             </TouchableOpacity>
           ) : (
@@ -135,9 +136,7 @@ const FilesScreen = ({route, navigation}) => {
               <Text> </Text>
               <Image
                 source={{
-                  uri:
-                    'https://mondaa-test.s3.ap-east-1.amazonaws.com/' +
-                    (item.thumbnail_url || item.url),
+                  uri: provider.s3URL + (item.thumbnail_url || item.url),
                 }}
                 style={{
                   width: 30,
@@ -182,7 +181,7 @@ const FilesScreen = ({route, navigation}) => {
         />
         <GestureHandlerRootView>
           <FlatList
-            style={{height: '100%', margin: 20}}
+            style={{margin: 10}}
             data={files}
             renderItem={renderItem}
             ItemSeparatorComponent={() =>

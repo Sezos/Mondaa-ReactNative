@@ -1,8 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
 import {IconButton, Button} from 'react-native-paper';
 import {COLOR_PALETTE, FONTS} from '../utils/Constants';
-import {FlatList, GestureHandlerRootView} from 'react-native-gesture-handler';
+import {
+  FlatList,
+  GestureHandlerRootView,
+  RefreshControl,
+} from 'react-native-gesture-handler';
 import {Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 // import {ProviderContext} from './../provider/Provider';
@@ -10,9 +14,11 @@ import services from '../services/service';
 import {socket} from '../utils/socket';
 import UserEmptyList from '../components/EmptyList2';
 import {SheetManager} from 'react-native-actions-sheet';
+import {ProviderContext} from '../provider/Provider';
 
 const ChatsScreen = ({}) => {
   const [groups, setGroups] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   socket.onAny((eventName, chat) => {
     console.log(eventName, chat);
@@ -26,7 +32,9 @@ const ChatsScreen = ({}) => {
   }, []);
 
   const fetch = async () => {
+    setIsRefreshing(true);
     const {data} = await services.getGroups();
+    console.log('data: ', data);
     setGroups(
       data.map(dat => {
         return {
@@ -39,6 +47,7 @@ const ChatsScreen = ({}) => {
         };
       }),
     );
+    setIsRefreshing(false);
   };
 
   const createGroup = async () => {
@@ -60,12 +69,20 @@ const ChatsScreen = ({}) => {
     fetch();
   };
 
+  const onUpdate = () => {
+    fetch();
+  };
+
   return (
     <View>
       <ChatHeader onPress={createGroup} />
       <View>
         <GestureHandlerRootView>
           <FlatList
+            onRefresh={fetch}
+            refreshControl={
+              <RefreshControl refreshing={isRefreshing} onRefresh={fetch} />
+            }
             style={{height: '100%'}}
             data={groups}
             renderItem={({item}) => (
@@ -76,6 +93,7 @@ const ChatsScreen = ({}) => {
                 date={item.date}
                 status={item.status}
                 imgURL={item.imgURL}
+                onUpdate={onUpdate}
               />
             )}
             keyExtractor={(item, index) => index.toString()}
@@ -107,15 +125,18 @@ const ChatHeader = ({onPress}) => {
   );
 };
 
-const ChatSection = ({id, title, imgURL, lastChat, date, status}) => {
+const ChatSection = ({id, title, imgURL, lastChat, date, status, onUpdate}) => {
+  const provider = useContext(ProviderContext);
   const navigation = useNavigation();
+  console.log(imgURL, provider.s3URL);
   return (
     <TouchableOpacity
       onPress={() => {
         navigation.navigate('ChatScreen', {
           id: id,
           title: title,
-          imgURL: imgURL || require('../assets/job_icon.png'),
+          imgURL: imgURL,
+          update: onUpdate,
         });
       }}>
       <View style={styles.ChatSection.Body}>
@@ -124,7 +145,11 @@ const ChatSection = ({id, title, imgURL, lastChat, date, status}) => {
             <Image
               style={styles.ChatSection.image}
               resizeMode="contain"
-              source={imgURL || require('../assets/job_icon.png')}
+              source={
+                imgURL
+                  ? {uri: provider.s3URL + imgURL}
+                  : require('../assets/job_icon.png')
+              }
             />
           </View>
           <View>
@@ -148,6 +173,7 @@ const styles = StyleSheet.create({
       width: 50,
       height: 50,
       marginRight: 10,
+      borderRadius: 1000,
     },
     rightSide: {display: 'flex', flexDirection: 'row'},
     lastChat: {

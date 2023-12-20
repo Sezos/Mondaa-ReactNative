@@ -12,6 +12,8 @@ import {ProviderContext} from '../provider/Provider';
 import WorkSvg from '../assets/TabIcons/Desk';
 import UserHomeScreen from '../screens/user/UserHomeScreen';
 import CreateTimeSheet from '../screens/leader/CreateTimeSheet';
+import ChatsScreen from '../screens/ChatsScreen';
+import ChatSvg from '../assets/TabIcons/Chat';
 
 const Tab = createBottomTabNavigator();
 
@@ -54,6 +56,20 @@ const UserTabNavigator = ({navigation}) => {
       ) : (
         <></>
       )}
+      <Tab.Screen
+        name="Chats"
+        component={ChatsScreen}
+        options={{
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarIcon: ({focused}) => (
+            <View>
+              {focused && <Badge size={7} style={styles.badge} />}
+              <ChatSvg />
+            </View>
+          ),
+        }}
+      />
       <Tab.Screen
         name="UserProfileScreen"
         component={UserProfileScreen}

@@ -28,7 +28,7 @@ const RenderContent = ({item, index, onPress}) => {
         <View style={styles.subContainer}>
           <Text
             allowFontScaling={false}
-            style={[styles.jobName, {textColor: 'black'}]}>
+            style={[styles.jobName, {color: 'black'}]}>
             {item.description}
           </Text>
           <IconButton
@@ -107,6 +107,7 @@ const ManagerConterManager = ({navigation}) => {
       // console.error('Error changing profile', error);
     }
   };
+
   const _handleLogout = () => {
     Alert.alert('Warning', 'Are you sure?', [
       {
@@ -123,14 +124,13 @@ const ManagerConterManager = ({navigation}) => {
       },
     ]);
   };
-
   return (
     <View style={StyleSheet.absoluteFill}>
       <GestureHandlerRootView>
         <TouchableOpacity onPress={_profileSelect}>
           <Avatar.Image
             source={{
-              uri: provider.avatar || zuragURL,
+              uri: provider.s3URL + provider.avatar || zuragURL,
             }}
             size={150}
             style={{alignSelf: 'center', marginTop: 30}}

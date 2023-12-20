@@ -52,7 +52,7 @@ const FileScreen = ({route, navigation}) => {
         />
         <Image
           source={{
-            uri: 'https://mondaa-test.s3.ap-east-1.amazonaws.com/' + file.url,
+            uri: provider.s3URL + file.url,
           }}
           resizeMode="contain"
           style={{width: '100%', height: '100%'}}

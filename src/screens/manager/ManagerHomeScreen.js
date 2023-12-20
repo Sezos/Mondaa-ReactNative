@@ -114,8 +114,8 @@ const ManagerHomeScreen = ({navigation}) => {
           <Button
             style={{
               backgroundColor: COLOR_PALETTE.primaryColor,
+              color: 'black',
             }}
-            textColor="#fff"
             onPress={_sendOffNoti}>
             Send Off
           </Button>

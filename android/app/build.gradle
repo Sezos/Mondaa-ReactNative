@@ -110,7 +110,7 @@ android {
     splits {
         abi {
             reset()
-            enable enableSeparateBuildPerCPUArchitecture
+            enable true
             universalApk false  // If true, also generate a universal APK
             include (*reactNativeArchitectures())
         }
@@ -176,6 +176,7 @@ dependencies {
     implementation("com.facebook.react:react-android")
     // implementation 'androidx.work:work-runtime:2.7.1'
     implementation "androidx.multidex:multidex:2.0.1"
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0' 
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
     implementation("com.google.firebase:firebase-analytics")
