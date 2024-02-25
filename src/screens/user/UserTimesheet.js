@@ -1,21 +1,30 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useContext, useEffect, useState} from 'react';
-import {Linking, StyleSheet, Text, View} from 'react-native';
-import {Button, DataTable, IconButton, Modal, Portal} from 'react-native-paper';
-import services from '../../services/service';
-import {Calendar} from 'react-native-calendars';
-import {COLOR_PALETTE} from '../../utils/Constants';
-import {ProviderContext} from '../../provider/Provider';
-import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
+import React, { useContext, useEffect, useState } from "react";
+import { Linking, StyleSheet, Text, View } from "react-native";
+import {
+  Button,
+  DataTable,
+  IconButton,
+  Modal,
+  Portal,
+} from "react-native-paper";
+import services from "../../services/service";
+import { Calendar } from "react-native-calendars";
+import { COLOR_PALETTE } from "../../utils/Constants";
+import { ProviderContext } from "../../provider/Provider";
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 // import RNHTMLtoPDF from 'react-native-html-to-pdf';
 
-export default function ManagerTimesheet({navigation}) {
+export default function ManagerTimesheet({ navigation }) {
   //date datas
   const provider = useContext(ProviderContext);
 
-  const [from, setFrom] = useState(new Date().toISOString().split('T')[0]);
-  const [to, setTo] = useState(new Date().toISOString().split('T')[0]);
+  const [from, setFrom] = useState(null);
+  const [to, setTo] = useState(null);
 
   //Boolean to show if calendar is shown
 
@@ -29,34 +38,34 @@ export default function ManagerTimesheet({navigation}) {
   const [datas, setDatas] = useState([]);
 
   useEffect(() => {
-    _handleChangeDate(new Date().toISOString().split('T')[0], '');
+    _handleChangeDate(new Date().toISOString().split("T")[0], "");
   }, []);
 
   useEffect(() => {
+    if (from === null || to === null) return;
     _fetch();
   }, [from, to]);
 
   async function _fetch() {
-    const {data} = await services.getWorkHoursTotalEmployee(
+    const { data } = await services.getWorkHoursTotalEmployee(
       from,
       to,
-      provider.userData.id,
+      provider.userData.id
     );
-    // console.log('data: ', data);
     setDatas(data);
   }
 
   const _download = async () => {
-    const {data} = await services.downloadWorkHours(
+    const { data } = await services.downloadWorkHours(
       from,
       to,
-      provider.userData.id,
+      provider.userData.id
     );
     Linking.openURL(data.response);
   };
 
-  const toggleCalendar = calendar => {
-    if (calendar === 'from') {
+  const toggleCalendar = (calendar) => {
+    if (calendar === "from") {
       setShowFrom(!showFrom);
     } else {
       setShowTo(!showTo);
@@ -66,11 +75,11 @@ export default function ManagerTimesheet({navigation}) {
   const _handleChangeDate = (dateString, which) => {
     let markedObj = {};
 
-    markedObj[dateString] = {selected: true, selectedColor: '#4355FA'};
+    markedObj[dateString] = { selected: true, selectedColor: "#4355FA" };
 
-    if (which === 'from') {
+    if (which === "from") {
       setFromMarkedDate(markedObj);
-    } else if (which === 'to') {
+    } else if (which === "to") {
       setToMarkedDate(markedObj);
     } else {
       setFromMarkedDate(markedObj);
@@ -83,23 +92,26 @@ export default function ManagerTimesheet({navigation}) {
       <View
         style={{
           height: 60,
-          backgroundColor: '#fff',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
+          backgroundColor: "#fff",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
-          }}>
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
           <View
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
             <IconButton
               icon="arrow-left"
               iconColor="#04092199"
@@ -109,7 +121,7 @@ export default function ManagerTimesheet({navigation}) {
             />
             <Text>Timesheet</Text>
           </View>
-          <View style={{display: 'flex', flexDirection: 'row'}}>
+          <View style={{ display: "flex", flexDirection: "row" }}>
             <IconButton icon="download" onPress={_download}>
               Download
             </IconButton>
@@ -117,37 +129,57 @@ export default function ManagerTimesheet({navigation}) {
         </View>
       </View>
       <View>
-        <View>
+        <View
+          style={{
+            display: "flex",
+            alignContent: "center",
+            justifyContent: "center",
+            flexDirection: "row",
+            marginBottom: 10,
+          }}
+        >
           <Button
             style={{
-              backgroundColor: 'rgb(227,220,232)',
-              borderRadius: 5,
-              borderBottomColor: 'black',
+              borderTopRightRadius: 5,
+              borderBottomRightRadius: 5,
+              borderColor: "#D4D4D4",
               height: 50,
-              borderBottomWidth: 1,
-              justifyContent: 'center',
+              width: 150,
+              borderWidth: 1,
+              justifyContent: "center",
+              color: "black",
+              borderRightWidth: 0,
             }}
             onPress={() => {
-              toggleCalendar('from');
-            }}>
-            {from === null ? 'Select Date' : from}
+              toggleCalendar("from");
+            }}
+          >
+            <Text style={{ color: "#545458", paddingHorizontal: 20 }}>
+              {from === null ? "Start Date" : from}
+            </Text>
           </Button>
           <Button
             style={{
-              backgroundColor: 'rgb(227,220,232)',
-              borderRadius: 5,
-              borderBottomColor: 'black',
+              borderTopLeftRadius: 5,
+              borderBottomLeftRadius: 5,
+              borderColor: "#D4D4D4",
               height: 50,
-              borderBottomWidth: 1,
-              justifyContent: 'center',
+              width: 150,
+              borderWidth: 1,
+              justifyContent: "center",
+              color: "black",
+              borderLeftWidth: 0,
             }}
             onPress={() => {
-              toggleCalendar('to');
-            }}>
-            {to === null ? 'Select Date' : to}
+              toggleCalendar("to");
+            }}
+          >
+            <Text style={{ color: "#545458" }}>
+              {to === null ? "End Date" : to}
+            </Text>
           </Button>
         </View>
-        <DataTable>
+        <DataTable style={{}}>
           <DataTable.Header>
             <DataTable.Title>Location</DataTable.Title>
             <DataTable.Title numeric>Date</DataTable.Title>
@@ -156,7 +188,7 @@ export default function ManagerTimesheet({navigation}) {
           </DataTable.Header>
 
           <GestureHandlerRootView>
-            <ScrollView style={{height: '84%'}}>
+            <ScrollView style={{ height: "84%" }}>
               {datas?.map((data, idx) => {
                 return (
                   <DataTable.Row key={idx}>
@@ -164,9 +196,9 @@ export default function ManagerTimesheet({navigation}) {
                       {data.Project.ProjectLocation.name}
                     </DataTable.Cell>
                     <DataTable.Cell numeric>
-                      {data.Project.date.split('T')[0].split('-')[1] +
-                        '-' +
-                        data.Project.date.split('T')[0].split('-')[2]}
+                      {data.Project.date.split("T")[0].split("-")[1] +
+                        "-" +
+                        data.Project.date.split("T")[0].split("-")[2]}
                     </DataTable.Cell>
                     <DataTable.Cell numeric>{data.hours}</DataTable.Cell>
                     <DataTable.Cell numeric>${data.salary}</DataTable.Cell>
@@ -181,9 +213,10 @@ export default function ManagerTimesheet({navigation}) {
         <Modal
           visible={showFrom}
           onDismiss={() => {
-            toggleCalendar('from');
+            toggleCalendar("from");
           }}
-          contentContainerStyle={styles.ModalStyle}>
+          contentContainerStyle={styles.ModalStyle}
+        >
           <Calendar
             markedDates={fromMarkedDate}
             style={{
@@ -191,8 +224,8 @@ export default function ManagerTimesheet({navigation}) {
               marginHorizontal: 10,
               borderRadius: 20,
             }}
-            onDayPress={day => {
-              _handleChangeDate(day.dateString, 'from');
+            onDayPress={(day) => {
+              _handleChangeDate(day.dateString, "from");
             }}
             monthFormat="MMM yyyy"
             hideExtraDays={true}
@@ -203,25 +236,27 @@ export default function ManagerTimesheet({navigation}) {
             mode="contained"
             style={{
               marginVertical: 20,
-              width: '90%',
-              alignSelf: 'center',
+              width: "90%",
+              alignSelf: "center",
               borderRadius: 10,
             }}
             buttonColor={COLOR_PALETTE.primaryColor}
             textColor="#fff"
             onPress={() => {
               setFrom(Object.keys(fromMarkedDate)[0]);
-              toggleCalendar('from');
-            }}>
+              toggleCalendar("from");
+            }}
+          >
             Select
           </Button>
         </Modal>
         <Modal
           visible={showTo}
           onDismiss={() => {
-            toggleCalendar('to');
+            toggleCalendar("to");
           }}
-          contentContainerStyle={styles.ModalStyle}>
+          contentContainerStyle={styles.ModalStyle}
+        >
           <Calendar
             markedDates={toMarkedDate}
             style={{
@@ -229,8 +264,8 @@ export default function ManagerTimesheet({navigation}) {
               marginHorizontal: 10,
               borderRadius: 20,
             }}
-            onDayPress={day => {
-              _handleChangeDate(day.dateString, 'to');
+            onDayPress={(day) => {
+              _handleChangeDate(day.dateString, "to");
             }}
             monthFormat="MMM yyyy"
             hideExtraDays={true}
@@ -241,16 +276,17 @@ export default function ManagerTimesheet({navigation}) {
             mode="contained"
             style={{
               marginVertical: 20,
-              width: '90%',
-              alignSelf: 'center',
+              width: "90%",
+              alignSelf: "center",
               borderRadius: 10,
             }}
             buttonColor={COLOR_PALETTE.primaryColor}
             textColor="#fff"
             onPress={() => {
               setTo(Object.keys(toMarkedDate)[0]);
-              toggleCalendar('to');
-            }}>
+              toggleCalendar("to");
+            }}
+          >
             Select
           </Button>
         </Modal>
@@ -261,28 +297,28 @@ export default function ManagerTimesheet({navigation}) {
 
 const styles = StyleSheet.create({
   ModalStyle: {
-    backgroundColor: '#fff',
-    width: '90%',
+    backgroundColor: "#fff",
+    width: "90%",
     borderRadius: 20,
-    display: 'flex',
-    alignSelf: 'center',
+    display: "flex",
+    alignSelf: "center",
   },
   datatable_button: {
     flex: 1,
     marginTop: 7,
-    flexDirection: 'row',
-    width: 'auto',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    width: "auto",
+    alignItems: "center",
+    justifyContent: "flex-end",
     borderWidth: 1,
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   input: {
     height: 40,
-    width: '95%',
+    width: "95%",
     margin: 12,
     borderWidth: 1,
     borderRadius: 50,

@@ -15,9 +15,11 @@ import services from '../../services/service';
 
 const FileOrFolderSheet = props => {
   const [name, setName] = useState('');
+  
   useEffect(() => {
     console.log('here?');
   }, []);
+
   const createFolder = async () => {
     const {data, status} = await services.createFile(
       name,

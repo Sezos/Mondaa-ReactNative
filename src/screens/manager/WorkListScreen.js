@@ -1,20 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  RefreshControl,
-  FlatList,
-} from 'react-native';
-import {Swipeable, GestureHandlerRootView} from 'react-native-gesture-handler';
-import WorkAddSvg from '../../assets/icons/WorkAdd';
-import services from '../../services/service';
-import JobItem from '../../components/manager/JobItem';
-import EmptyList from '../../components/EmptyList';
-import JobList from '../../components/manager/JobList';
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import WorkAddSvg from "../../assets/icons/WorkAdd";
+import JobList from "../../components/manager/JobList";
+import services from "../../services/service";
 
-const WorkScreen = ({navigation}) => {
+const WorkScreen = ({ navigation }) => {
   const styles = useStyles();
 
   const [workJSON, setWorkJSON] = useState([]);
@@ -27,34 +17,35 @@ const WorkScreen = ({navigation}) => {
   const _fetchData = async () => {
     setLoading(true);
     try {
-      const {data} = await services.getAllProject();
+      const { data } = await services.getAllProject();
       setWorkJSON(data);
     } catch (error) {
-      console.log('Error', error);
+      console.log("Error", error);
     } finally {
       setLoading(false);
     }
   };
 
   const _addJob = () => {
-    navigation.navigate('AddWorkScreen');
+    navigation.navigate("AddWorkScreen");
   };
 
-  const _jobInfo = data => {
-    navigation.navigate('JobScreen', {data: data});
+  const _jobInfo = (data) => {
+    navigation.navigate("JobScreen", { data: data });
   };
 
   return (
-    <View style={[StyleSheet.absoluteFill, {paddingHorizontal: 15}]}>
+    <View style={[StyleSheet.absoluteFill, { paddingHorizontal: 15 }]}>
       <View style={styles.headerContainer}>
-        <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
-          <Text allowFontScaling={false} style={{fontSize: 24}}>
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+          <Text allowFontScaling={false} style={{ fontSize: 24 }}>
             Project
           </Text>
           <View style={styles.employeeCountContainer}>
             <Text
               allowFontScaling={false}
-              style={styles.employeeCountText}></Text>
+              style={styles.employeeCountText}
+            ></Text>
           </View>
         </View>
         <TouchableOpacity onPress={_addJob}>
@@ -63,10 +54,11 @@ const WorkScreen = ({navigation}) => {
           </View>
         </TouchableOpacity>
       </View>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Text
           allowFontScaling={false}
-          style={{marginVertical: 10, fontSize: 12}}>
+          style={{ marginVertical: 10, fontSize: 12 }}
+        >
           Total: {workJSON.length}
         </Text>
         <JobList
@@ -93,17 +85,17 @@ const WorkScreen = ({navigation}) => {
 const useStyles = () => {
   return StyleSheet.create({
     headerContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
       marginTop: 24,
     },
     addButton: {
-      backgroundColor: '#fff',
+      backgroundColor: "#fff",
       width: 35,
       height: 35,
-      alignItems: 'center',
-      justifyContent: 'center',
+      alignItems: "center",
+      justifyContent: "center",
       borderRadius: 100,
     },
   });

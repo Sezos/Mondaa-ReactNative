@@ -1,25 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { IconButton, Button } from "react-native-paper";
-import { COLOR_PALETTE, FONTS } from "../utils/Constants";
+import { COLOR_PALETTE, FONTS } from "../../utils/Constants";
 import {
     FlatList,
     GestureHandlerRootView,
     RefreshControl,
 } from "react-native-gesture-handler";
 import { Divider } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 // import {ProviderContext} from './../provider/Provider';
-import services from "../services/service";
-import { socket } from "../utils/socket";
-import UserEmptyList from "../components/EmptyList2";
+import services from "../../services/service";
+import { socket } from "../../utils/socket";
+import UserEmptyList from "../../components/EmptyList2";
 import { SheetManager } from "react-native-actions-sheet";
-import { ProviderContext } from "../provider/Provider";
-
+import { ProviderContext } from "../../provider/Provider";
 const ChatsScreen = ({}) => {
     const [groups, setGroups] = useState([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
-
+    const isFocused = useIsFocused();
     socket.onAny((eventName, chat) => {
         console.log("eventName", eventName);
         console.log("chat", chat);
@@ -30,7 +29,7 @@ const ChatsScreen = ({}) => {
 
     useEffect(() => {
         fetch();
-    }, []);
+    }, [isFocused]);
 
     const fetch = async () => {
         setIsRefreshing(true);
@@ -68,10 +67,6 @@ const ChatsScreen = ({}) => {
         fetch();
     };
 
-    const onUpdate = () => {
-        fetch();
-    };
-
     return (
         <View>
             <View>
@@ -97,7 +92,6 @@ const ChatsScreen = ({}) => {
                                 date={item.date}
                                 status={item.status}
                                 imgURL={item.imgURL}
-                                onUpdate={onUpdate}
                             />
                         )}
                         keyExtractor={(item, index) => index.toString()}
@@ -132,15 +126,7 @@ const ChatHeader = ({ onPress }) => {
     );
 };
 
-const ChatSection = ({
-    id,
-    title,
-    imgURL,
-    lastChat,
-    date,
-    status,
-    onUpdate,
-}) => {
+const ChatSection = ({ id, title, imgURL, lastChat, date, status }) => {
     const provider = useContext(ProviderContext);
     const navigation = useNavigation();
     return (
@@ -148,9 +134,7 @@ const ChatSection = ({
             onPress={() => {
                 navigation.navigate("ChatScreen", {
                     id: id,
-                    title: title,
                     imgURL: imgURL,
-                    update: onUpdate,
                 });
             }}
         >
@@ -163,7 +147,7 @@ const ChatSection = ({
                             source={
                                 imgURL
                                     ? { uri: provider.s3URL + imgURL }
-                                    : require("../assets/job_icon.png")
+                                    : require("../../assets/job_icon.png")
                             }
                         />
                     </View>
