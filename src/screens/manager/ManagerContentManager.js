@@ -1,22 +1,22 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useContext} from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
-import {COLOR_PALETTE, FONTS} from '../../utils/Constants';
-import {Avatar, Button, IconButton, Text} from 'react-native-paper';
-import WorkerScreen from './WorkerScreen';
+import React, { useContext } from "react";
+import { Alert, StyleSheet, View } from "react-native";
+import { COLOR_PALETTE, FONTS } from "../../utils/Constants";
+import { Avatar, Button, IconButton, Text } from "react-native-paper";
+import WorkerScreen from "./WorkerScreen";
 import {
   GestureHandlerRootView,
   TouchableOpacity,
-} from 'react-native-gesture-handler';
-import {ProviderContext} from '../../provider/Provider';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ImagePicker from 'react-native-image-crop-picker';
-import services from '../../services/service';
-import {useToast} from 'react-native-toast-notifications';
+} from "react-native-gesture-handler";
+import { ProviderContext } from "../../provider/Provider";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import ImagePicker from "react-native-image-crop-picker";
+import services from "../../services/service";
+import { useToast } from "react-native-toast-notifications";
 const zuragURL =
-  'https://scontent.fsyd12-1.fna.fbcdn.net/v/t39.30808-6/304834509_535131748616627_7084528645270394390_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=ekg7S1Z3-6UAX8tKlfi&_nc_ht=scontent.fsyd12-1.fna&oh=00_AfAlkOI1A2-s-dZFMKYHiRs1TW8V0pCytKWIDSQAAKD1MQ&oe=64ED8B55';
+  "https://scontent.fsyd12-1.fna.fbcdn.net/v/t39.30808-6/304834509_535131748616627_7084528645270394390_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=ekg7S1Z3-6UAX8tKlfi&_nc_ht=scontent.fsyd12-1.fna&oh=00_AfAlkOI1A2-s-dZFMKYHiRs1TW8V0pCytKWIDSQAAKD1MQ&oe=64ED8B55";
 
-const RenderContent = ({item, index, onPress}) => {
+const RenderContent = ({ item, index, onPress }) => {
   return (
     <View>
       <Button
@@ -24,11 +24,13 @@ const RenderContent = ({item, index, onPress}) => {
         key={index.toString()}
         onPress={() => {
           onPress(item.componentName);
-        }}>
+        }}
+      >
         <View style={styles.subContainer}>
           <Text
             allowFontScaling={false}
-            style={[styles.jobName, {color: 'black'}]}>
+            style={[styles.jobName, { color: "black" }]}
+          >
             {item.description}
           </Text>
           <IconButton
@@ -44,39 +46,39 @@ const RenderContent = ({item, index, onPress}) => {
   );
 };
 
-const ManagerConterManager = ({navigation}) => {
+const ManagerConterManager = ({ navigation }) => {
   const provider = useContext(ProviderContext);
   const toast = useToast();
   const items = [
     {
-      name: 'create_location',
-      description: 'Project Locations',
-      componentName: 'ProjectLocationScreen',
+      name: "create_location",
+      description: "Project Locations",
+      componentName: "ProjectLocationScreen",
     },
     {
-      name: 'Timesheet',
-      description: 'Timesheet',
-      componentName: 'TimesheetScreen',
+      name: "Timesheet",
+      description: "Timesheet",
+      componentName: "TimesheetScreen",
     },
     {
-      name: 'Employees',
-      description: 'Employees',
-      componentName: 'WorkerScreen',
+      name: "Employees",
+      description: "Employees",
+      componentName: "WorkerScreen",
     },
     {
-      name: 'Send Notification',
-      description: 'Send Notification',
-      componentName: 'SendNotification',
+      name: "Send Notification",
+      description: "Send Notification",
+      componentName: "SendNotification",
     },
     {
-      name: 'Files',
-      description: 'Files',
-      componentName: 'FilesScreen',
+      name: "Files",
+      description: "Files",
+      componentName: "FilesScreen",
     },
   ];
 
-  const onPress = screenName => {
-    if (screenName === 'Files') {
+  const onPress = (screenName) => {
+    if (screenName === "Files") {
       navigation.navigate(screenName, {
         id: 1,
       });
@@ -91,17 +93,17 @@ const ManagerConterManager = ({navigation}) => {
         cropping: true,
         includeBase64: true,
         cropperCircleOverlay: true,
-        mediaType: 'photo',
+        mediaType: "photo",
 
-        loadingLabelText: 'Loading, Please Wait!',
+        loadingLabelText: "Loading, Please Wait!",
       });
 
-      const {data} = await services.setAvatar({
+      const { data } = await services.setAvatar({
         image: `data:${result.mime};base64,${result.data}`,
       });
       if (data.success) {
         provider.setAvatar(`data:${result.mime};base64,${result.data}`);
-        toast.show('Picture is changed successfully', {type: 'success'});
+        toast.show("Picture is changed successfully", { type: "success" });
       }
     } catch (error) {
       // console.error('Error changing profile', error);
@@ -109,18 +111,18 @@ const ManagerConterManager = ({navigation}) => {
   };
 
   const _handleLogout = () => {
-    Alert.alert('Warning', 'Are you sure?', [
+    Alert.alert("Warning", "Are you sure?", [
       {
-        text: 'Yes',
+        text: "Yes",
         onPress: () => {
           provider.setIsLoggedIn(false);
         },
-        style: 'default',
+        style: "default",
       },
       {
-        text: 'No',
+        text: "No",
         onPress: () => {},
-        style: 'cancel',
+        style: "cancel",
       },
     ]);
   };
@@ -133,7 +135,7 @@ const ManagerConterManager = ({navigation}) => {
               uri: provider.s3URL + provider.avatar || zuragURL,
             }}
             size={150}
-            style={{alignSelf: 'center', marginTop: 30}}
+            style={{ alignSelf: "center", marginTop: 30 }}
           />
         </TouchableOpacity>
       </GestureHandlerRootView>
@@ -141,16 +143,18 @@ const ManagerConterManager = ({navigation}) => {
       <View
         style={{
           height: 60,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
+            flexDirection: "row",
+            alignItems: "center",
             paddingLeft: 20,
-            width: '100%',
-          }}>
+            width: "100%",
+          }}
+        >
           <Text variant="titleLarge">Content Manager</Text>
         </View>
       </View>
@@ -183,22 +187,22 @@ const ManagerConterManager = ({navigation}) => {
 
 const styles = StyleSheet.create({
   itemContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     marginVertical: 10,
     borderRadius: 10,
     paddingHorizontal: 10,
     marginHorizontal: 15,
   },
   item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: 5,
     paddingVertical: 15,
   },
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
-    width: '100%',
+    width: "100%",
     height: 50,
     marginVertical: 5,
   },
@@ -207,22 +211,22 @@ const styles = StyleSheet.create({
     height: 50,
   },
   subContainer: {
-    width: '100%',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
+    width: "100%",
+    justifyContent: "space-between",
+    flexDirection: "row",
     flex: 1,
     marginLeft: 16,
   },
   jobName: {
     fontSize: 16.5,
-    alignSelf: 'center',
+    alignSelf: "center",
     color: COLOR_PALETTE.textColor,
     fontFamily: FONTS.medium,
   },
   infoTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
     marginTop: 7,
   },
   infoText: {
@@ -233,14 +237,14 @@ const styles = StyleSheet.create({
   floatButton: {
     width: 50,
     height: 50,
-    position: 'absolute',
+    position: "absolute",
     bottom: 10,
     right: 0,
   },
   content: {
-    display: 'flex',
-    width: '100%',
-    backgroundColor: 'black',
+    display: "flex",
+    width: "100%",
+    backgroundColor: "black",
   },
   body: {
     paddingHorizontal: 15,

@@ -48,6 +48,7 @@ setup_permissions([
 #   }
 # }
 # ```
+
 flipper_config = FlipperConfiguration.disabled
 if ENV['NO_FLIPPER'] == '1' then
   # Explicitly disabled through environment variables
