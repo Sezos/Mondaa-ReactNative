@@ -48,7 +48,6 @@ setup_permissions([
 #   }
 # }
 # ```
-
 flipper_config = FlipperConfiguration.disabled
 if ENV['NO_FLIPPER'] == '1' then
   # Explicitly disabled through environment variables
@@ -97,7 +96,7 @@ target 'Mondaa' do
       .each do |pod_name, target_installation_result|
       target_installation_result.resource_bundle_targets.each do |resource_bundle_target|
         resource_bundle_target.build_configurations.each do |config|
-          config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+          config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
         end
       end
     end

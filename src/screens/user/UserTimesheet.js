@@ -228,7 +228,7 @@ export default function ManagerTimesheet({ navigation }) {
 
     const to = ["account@mondaa.com.au"]; // Set the recipient's email
     console.log(pdfPath);
-    console.log(rnMail);
+
     /*
       recipients?: string[];
       ccRecipients?: string[];

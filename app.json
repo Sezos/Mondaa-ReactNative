@@ -2,14 +2,14 @@
   "expo": {
     "name": "Mondaa",
     "slug": "Mondaa",
-    "version": "1.1.4",
+    "version": "1.1.6",
     "assetBundlePatterns": ["**/*"],
     "android": {
       "googleServicesFile": "./android/app/google-services.json",
       "package": "com.mondaagroup"
     },
     "ios": {
-      "googleServicesFile": "./ios/App/GoogleService-Info.plist",
+      "googleServicesFile": "./ios/Mondaa/GoogleService-Info.plist",
       "useFrameworks": "static",
       "bundleIdentifier": "com.mondaagroup"
     },
