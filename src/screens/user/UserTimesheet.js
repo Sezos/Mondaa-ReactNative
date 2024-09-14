@@ -17,7 +17,9 @@ import {
   GestureHandlerRootView,
   ScrollView,
 } from "react-native-gesture-handler";
-// import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import RNFS from "react-native-fs";
+import { grayscale, PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import * as MailComposer from "expo-mail-composer";
 
 export default function ManagerTimesheet({ navigation }) {
   //date datas
@@ -71,6 +73,172 @@ export default function ManagerTimesheet({ navigation }) {
       setShowTo(!showTo);
     }
   };
+  const generateInvoicePdf = async () => {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage([500, 800]);
+
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontSize = 12;
+
+    page.drawText("Invoice", { x: 50, y: 750, size: 20, font });
+
+    page.drawText(` Bill To\n Mondaa Group PTY LTD \n ABN: 29622396249`, {
+      x: 50,
+      y: 720,
+      size: fontSize,
+      font,
+    });
+
+    page.drawText(
+      `Invoice#\tINV-001\nInvoice Date\t${
+        new Date().toISOString().split("T")[0]
+      }\nDue Date\t${new Date().toISOString().split("T")[0]}`,
+      {
+        x: 300,
+        y: 720,
+        size: fontSize,
+        font,
+      }
+    );
+    page.drawRectangle({
+      x: 50,
+      y: 630,
+      width: 400,
+      height: 25,
+      color: grayscale(0.5),
+      opacity: 0.5,
+      borderOpacity: 0.75,
+    });
+
+    page.drawText("Item Name", { x: 50, y: 640, size: fontSize, font });
+    page.drawText("Quantity", { x: 200, y: 640, size: fontSize, font });
+    page.drawText("Rate", { x: 300, y: 640, size: fontSize, font });
+    page.drawText("Amount", { x: 400, y: 640, size: fontSize, font });
+
+    let yPosition = 610;
+    let total = 0;
+
+    console.log(datas);
+
+    datas.forEach((item) => {
+      const itemTotal = item.hours * item.rate;
+      total += itemTotal;
+      page.drawLine({
+        start: { x: 50, y: yPosition - 5 },
+        end: { x: 450, y: yPosition - 5 },
+        thickness: 1,
+        opacity: 0.2,
+      });
+      page.drawText(item.Project.ProjectLocation.name, {
+        x: 50,
+        y: yPosition,
+        size: fontSize,
+        font,
+      });
+
+      page.drawText(`${item.hours} hours`, {
+        x: 200,
+        y: yPosition,
+        size: fontSize,
+        font,
+      });
+
+      page.drawText(`$${item.rate.toFixed(2)}`, {
+        x: 300,
+        y: yPosition,
+        size: fontSize,
+        font,
+      });
+
+      page.drawText(`$${itemTotal.toFixed(2)}`, {
+        x: 400,
+        y: yPosition,
+        size: fontSize,
+        font,
+      });
+
+      yPosition -= 20;
+    });
+
+    page.drawText("Total:", { x: 300, y: yPosition, size: fontSize, font });
+    page.drawText(`$${total.toFixed(2)}`, {
+      x: 400,
+      y: yPosition,
+      size: fontSize,
+      font,
+    });
+
+    yPosition -= 40;
+    page.drawText(`Worker ID: ${provider.userData.id ?? "-"}`, {
+      x: 50,
+      y: yPosition,
+      size: fontSize,
+      font,
+    });
+
+    yPosition -= 20;
+    page.drawText(`ABN Number: ${provider.userData.accountBSB ?? "-"}`, {
+      x: 50,
+      y: yPosition,
+      size: fontSize,
+      font,
+    });
+
+    yPosition -= 20;
+    page.drawText(
+      `Bank Account Name: ${provider.userData.accountName ?? "-"}`,
+      {
+        x: 50,
+        y: yPosition,
+        size: fontSize,
+        font,
+      }
+    );
+
+    yPosition -= 20;
+    page.drawText(
+      `Bank Account Number: ${provider.userData.accountNumber ?? "-"}`,
+      {
+        x: 50,
+        y: yPosition,
+        size: fontSize,
+        font,
+      }
+    );
+
+    const pdfBytes = await pdfDoc.save();
+    const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
+    const pdfPath = `${RNFS.DocumentDirectoryPath}/invoice.pdf`;
+
+    await RNFS.writeFile(pdfPath, pdfBase64, "base64");
+    return pdfPath;
+  };
+
+  const _generatePDF = async () => {
+    const pdfPath = await generateInvoicePdf();
+
+    const to = ["account@mondaa.com.au"]; // Set the recipient's email
+    console.log(pdfPath);
+
+    /*
+      recipients?: string[];
+      ccRecipients?: string[];
+      bccRecipients?: string[];
+      subject?: string;
+      body?: string;
+      isHtml?: boolean;
+      attachments?: string[];
+    */
+
+    await MailComposer.composeAsync({
+      subject: `Invoice of ${provider.userData.name} /${
+        new Date().toISOString().split("T")[0]
+      }/`,
+      recipients: to,
+      body: "Please find the attached invoice.",
+      attachments: [pdfPath],
+    });
+  };
 
   const _handleChangeDate = (dateString, which) => {
     let markedObj = {};
@@ -122,6 +290,7 @@ export default function ManagerTimesheet({ navigation }) {
             <Text>Timesheet</Text>
           </View>
           <View style={{ display: "flex", flexDirection: "row" }}>
+            <IconButton icon="file-pdf-box" onPress={_generatePDF} />
             <IconButton icon="download" onPress={_download}>
               Download
             </IconButton>

@@ -648,6 +648,8 @@ PODS:
     - ExpoModulesCore
   - ExpoKeepAwake (12.3.0):
     - ExpoModulesCore
+  - ExpoMailComposer (12.3.0):
+    - ExpoModulesCore
   - ExpoModulesCore (1.5.13):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
@@ -1294,6 +1296,7 @@ DEPENDENCIES:
   - EXFont (from `../node_modules/expo-font/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
+  - ExpoMailComposer (from `../node_modules/expo-mail-composer/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -1398,6 +1401,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
+  ExpoMailComposer:
+    :path: "../node_modules/expo-mail-composer/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
   EXSplashScreen:
@@ -1527,6 +1532,7 @@ SPEC CHECKSUMS:
   EXFont: 738c44c390953ebcbab075a4848bfbef025fd9ee
   Expo: 9060b49fecf07bebf1dd967730d079aa5e750ebe
   ExpoKeepAwake: be4cbd52d9b177cde0fd66daa1913afa3161fc1d
+  ExpoMailComposer: feaebd62095efad901ede864b95406f02bf61681
   ExpoModulesCore: d2208be53c1b694c9a5898e871315cae77cb11bd
   EXSplashScreen: 2c80621e4bc952f5bea328304c2436f5fe21c2a0
   FBLazyVector: 748c0ef74f2bf4b36cfcccf37916806940a64c32
@@ -1609,4 +1615,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 772fa80693ef078139265972e8577de75b753962
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2
