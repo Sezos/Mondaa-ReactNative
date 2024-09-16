@@ -226,18 +226,7 @@ export default function ManagerTimesheet({ navigation }) {
   const _generatePDF = async () => {
     const pdfPath = await generateInvoicePdf();
 
-    const to = ["account@mondaa.com.au"]; // Set the recipient's email
-    console.log(pdfPath);
-
-    /*
-      recipients?: string[];
-      ccRecipients?: string[];
-      bccRecipients?: string[];
-      subject?: string;
-      body?: string;
-      isHtml?: boolean;
-      attachments?: string[];
-    */
+    const to = ["invoice@mondaa.com.au"];
 
     await MailComposer.composeAsync({
       subject: `Invoice of ${provider.userData.name} /${
